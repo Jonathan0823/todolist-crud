@@ -1,4 +1,6 @@
+import { useState } from "react";
 import React from "react";
+import db from "@/appwrite/databases";
 
 interface TodoProps {
   todo: {
@@ -6,13 +8,27 @@ interface TodoProps {
     body: string;
     isDone: boolean;
   };
+    setTodos: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const Todo: React.FC<TodoProps> = ({ todo }) => {
+const Todo: React.FC<TodoProps> = ({ setTodos, todo }) => {
+    const [list, setList] = useState(todo);
+
+    const handleUpdate = async () => {
+        const isdone = !list.isDone;
+        db.todo.update(list.$id, { isDone: isdone }, []);
+        setList({ ...list, isDone: isdone });
+    }
+
+    const handleDelete = async () => {
+        db.todo.delete(list.$id);
+        setTodos((prev: any[]) => prev.filter((item) => item.$id !== list.$id));
+    }
+
   return (
     <div>
       <li
-        key={todo.$id}
+        key={list.$id}
         className="my-4"
         style={{
           display: "flex",
@@ -22,7 +38,7 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
         }}
       >
         <span style={{ flex: 1 }} className="text-black">
-          {todo.isDone ? <s>{todo.body}</s> : todo.body}
+          {list.isDone ? <s>{list.body}</s> : list.body}
         </span>
         <button
           style={{
@@ -34,8 +50,9 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
             borderRadius: "4px",
             cursor: "pointer",
           }}
+          onClick={handleUpdate}
         >
-          Edit
+          {list.isDone ? "Uncheck" : "Check"}
         </button>
         <button
           style={{
@@ -47,6 +64,7 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
             borderRadius: "4px",
             cursor: "pointer",
           }}
+            onClick={handleDelete}
         >
           Delete
         </button>

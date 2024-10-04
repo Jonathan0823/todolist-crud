@@ -35,7 +35,7 @@ export default function Home() {
         <TodoForm setNotes={setTodos} />
         <ul style={{ listStyleType: 'none', padding: 0 }}>
           {todos.map((todo) => (
-            <Todo key={todo.$id} todo={todo}/>
+            <Todo key={todo.$id} setTodos={setTodos} todo={todo} />
           ))}
         </ul>
       </div>
