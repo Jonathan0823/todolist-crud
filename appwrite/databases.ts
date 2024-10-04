@@ -1,9 +1,10 @@
 import { databases } from "./config";
-import { ID } from "appwrite";
+import { ID, Query } from "appwrite";
 
 interface Collection {
   create: (payload: any, permissions: any, id?: string) => Promise<any>;
   update: (id: string, payload: any, permissions: any) => Promise<any>;
+  list: (queries?: any[]) => Promise<any>;
 }
 
 const db: { [key: string]: Collection } = {};
@@ -22,6 +23,7 @@ collections.forEach((col) => {
       databases.createDocument(col.dbId, col.id, id, payload, permissions),
     update: (id, payload, permissions) =>
       databases.updateDocument(col.dbId, col.id, id, payload, permissions),
+    list: (queries = []) => databases.listDocuments(col.dbId, col.id, [Query.orderDesc("$createdAt"), ...queries]),
   };
 });
 
