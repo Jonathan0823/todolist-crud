@@ -7,6 +7,7 @@ import Todo from "@/components/Todo";
 interface Todo {
   $id: string;
   body: string;
+  isDone: boolean;
 }
 
 export default function Home() {
@@ -19,9 +20,10 @@ export default function Home() {
   const init = async () => {
     const res = await db.todo.list();
 
-    setTodos(res.documents.map((doc: { $id: string; body: string }) => ({
+    setTodos(res.documents.map((doc: { $id: string; body: string; isDone: boolean }) => ({
       $id: doc.$id,
-      body: doc.body
+      body: doc.body,
+      isDone: doc.isDone
     })));
   }
 
