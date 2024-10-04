@@ -13,6 +13,7 @@ interface TodoProps {
 
 const Todo: React.FC<TodoProps> = ({ setTodos, todo }) => {
     const [list, setList] = useState(todo);
+    const [deleteTimeout, setDeleteTimeout] = useState<any>(false);
 
     const handleUpdate = async () => {
         const isdone = !list.isDone;
@@ -23,6 +24,7 @@ const Todo: React.FC<TodoProps> = ({ setTodos, todo }) => {
     const handleDelete = async () => {
         db.todo.delete(list.$id);
         setTodos((prev: any[]) => prev.filter((item) => item.$id !== list.$id));
+        setTimeout(() => setDeleteTimeout(false), 2000); // 2 seconds timeout
     }
 
   return (
@@ -65,6 +67,7 @@ const Todo: React.FC<TodoProps> = ({ setTodos, todo }) => {
             cursor: "pointer",
           }}
             onClick={handleDelete}
+            disabled={deleteTimeout}
         >
           Delete
         </button>
