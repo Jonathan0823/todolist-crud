@@ -5,6 +5,7 @@ interface Collection {
   create: (payload: any, permissions: any, id?: string) => Promise<any>;
   update: (id: string, payload: any, permissions: any) => Promise<any>;
   list: (queries?: any[]) => Promise<any>;
+  delete: (id: string) => Promise<any>;
 }
 
 const db: { [key: string]: Collection } = {};
@@ -24,6 +25,7 @@ collections.forEach((col) => {
     update: (id, payload, permissions) =>
       databases.updateDocument(col.dbId, col.id, id, payload, permissions),
     list: (queries = []) => databases.listDocuments(col.dbId, col.id, [Query.orderDesc("$createdAt"), ...queries]),
+    delete: (id) => databases.deleteDocument(col.dbId, col.id, id),
   };
 });
 
